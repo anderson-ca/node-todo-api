@@ -5,13 +5,18 @@ mongoose.connect('mongodb://localhost:27017/TodoApp');
 
 let Todo = mongoose.model('Todo', {
   text: {
-    type: String
+    type: String,
+    required: true,
+    minLength: 1,
+    trim
   },
   complete: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   completedAt: {
-    type: Number
+    type: Number,
+    default: null
   }
 });
 
