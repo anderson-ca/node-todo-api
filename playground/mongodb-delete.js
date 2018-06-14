@@ -13,19 +13,17 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
   let db = client.db('TodoApp');
 
   // deleteOne
-  db.collection().deleteOne().then((res) => {
+  db.collection('Users').deleteOne({name: 'Anderson Cardoso'}).then((res) => {
     console.log(res);
   })
 
   // deleteMany
-  db.collection('Users').deleteMany({name: 'Ilaha Cardoso'}).then((res) => {
+  db.collection('Users').deleteMany({name: 'Rick'}).then((res) => {
     console.log(res);
   });
 
   //findOneAndDelete
-  db.collection().findOneAndDelete().then((res) => {
+  db.collection('Users').findOneAndDelete({name: 'some dude'}).then((res) => {
     console.log(res);
   })
-
-
 });
