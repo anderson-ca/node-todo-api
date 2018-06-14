@@ -13,6 +13,9 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
   let db = client.db('TodoApp');
 
   // deleteOne
+  db.collection().deleteOne().then((res) => {
+    console.log(res);
+  })
 
   // deleteMany
   db.collection('Users').deleteMany({name: 'Ilaha Cardoso'}).then((res) => {
@@ -20,7 +23,9 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
   });
 
   //findOneAndDelete
-
+  db.collection().findOneAndDelete().then((res) => {
+    console.log(res);
+  })
 
 
 });
