@@ -16,3 +16,7 @@ let Todo = mongoose.model('Todo', { // schema
     default: null
   }
 });
+
+module.exports = {
+  Todo
+}
