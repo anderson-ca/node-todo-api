@@ -9,6 +9,12 @@ const {User} = require('./models/user');
 
 let app = express();
 
+app.use(bodyParser.json());
+
+all.post('/todos', (req, res) => {
+  console.log(req.body);
+})
+
 app.listen(port, () => {
   console.log(`App started on port ${port}`)
 });
