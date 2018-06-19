@@ -11,9 +11,16 @@ let app = express();
 
 app.use(bodyParser.json());
 
-all.post('/todos', (req, res) => {
-  console.log(req.body);
-})
+app.post('/todos', (req, res) => {
+  let todo = new Todo({
+    text: req.body.text
+  });
+
+  todo.save(),then((doc) => {
+
+  }, (err) => {
+
+  });
 
 app.listen(port, () => {
   console.log(`App started on port ${port}`)
