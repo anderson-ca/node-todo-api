@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const hbs = require('hbs');
 
 const port = process.env.PORT || 3000;
 
@@ -16,6 +17,10 @@ const {
 let app = express();
 
 app.use(bodyParser.json());
+app.set('view engine', 'hbs')
+
+////////////// -> hbs
+hbs.registerPartials(__dirname + '/views');
 
 ////////////////////////////////////
 app.post('/todos', (req, res) => {
@@ -45,3 +50,10 @@ app.post('/todos/remove', (req, res) => {
 app.listen(port, () => {
   console.log(`App started on port ${port}`)
 });
+
+
+
+///////////////
+///////////////
+///////////////
+module.exports = {app};
