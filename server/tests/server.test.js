@@ -100,8 +100,7 @@ describe('GET /todos:id', () => {
       .end(done);
   });
 
-  if('Should get an 404 error for non-existing object', (done) => {
-
+  it('Should get an 404 error for non-existing object', (done) => {
     request(app)
       .get(`/todo/${new ObjectID().toHexString()}`)
       .expect(404)
@@ -109,9 +108,10 @@ describe('GET /todos:id', () => {
 
   });
 
-  if('Should return 404 error if todo not found', (done) => {
+  it('Should return 404 error if todo not found', (done) => {
     request(app)
       .get('/todos/123')
       .expect(404)
+      .end(done);
   });
 });
