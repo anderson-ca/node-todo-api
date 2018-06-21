@@ -13,6 +13,9 @@ const {
 const {
   User
 } = require('./models/user');
+const {
+  ObjectID
+} = require('mongodb');
 
 let app = express();
 
@@ -50,7 +53,9 @@ app.post('/todos/remove', (req, res) => {
 ////////////////////////////////////////
 app.get('/todos', (req, res) => {
   Todo.find().then((todos) => {
-    res.send({todos});
+    res.send({
+      todos
+    });
   }, (err) => {
     res.status(400).send(err);
   });
@@ -60,7 +65,22 @@ app.listen(port, () => {
   console.log(`App started on port ${port}`)
 });
 
+////////////////////////////////////////
+app.get('/todos/:id', (req, res) => {
+  let userId = req.params;
 
+  if (!ObjectID.isValid(userId.id)) {
+    return res.status(404).send();
+  }
+
+  User.findById(userId.id).then((todo) => {
+    if(!todo) {
+      return res.status(404).send();
+    }
+    res.send(todo);
+    console.log(JSON.stringify(todo, undefined, 2));
+  }).catch((err) => res.status(404).send());
+});
 
 ///////////////
 ///////////////
