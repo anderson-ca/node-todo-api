@@ -67,17 +67,19 @@ app.listen(port, () => {
 
 ////////////////////////////////////////
 app.get('/todos/:id', (req, res) => {
-  let userId = req.params;
+  let todoId = req.params;
 
-  if (!ObjectID.isValid(userId.id)) {
+  if (!ObjectID.isValid(todoId.id)) {
     return res.status(404).send();
   }
 
-  User.findById(userId.id).then((todo) => {
-    if(!todo) {
+  Todo.findById(todoId.id).then((todo) => {
+    if (!todo) {
       return res.status(404).send();
     }
-    res.send(todo);
+    res.send({
+      todo
+    });
     console.log(JSON.stringify(todo, undefined, 2));
   }).catch((err) => res.status(404).send());
 });
