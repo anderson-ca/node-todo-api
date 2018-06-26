@@ -1,6 +1,6 @@
 const expect = require('expect');
 const request = require('supertest');
-
+///////////////////////////////////////////
 const {
   ObjectID
 } = require('mongodb');
@@ -10,7 +10,7 @@ const {
 const {
   Todo
 } = require('./../models/todo');
-
+///////////////////////////////////////////
 let todos = [
   {
     _id: new ObjectID(),
@@ -25,14 +25,17 @@ let todos = [
     text: 'third test'
   }
   ];
-
+///////////////////////////////////////////
 beforeEach((done) => {
   Todo.remove({}).then(() => {
     return Todo.insertMany(todos);
   }).then(() => done());
 });
-
+////////////////////////////////////////
+////////////////////////////////////////
+////////////////////////////////////////
 describe('POST / todo', () => {
+  ///////////////////////////////////////////
   it('Should create new todo', (done) => {
     let text = 'Todo test text';
 
@@ -50,14 +53,16 @@ describe('POST / todo', () => {
           return done(err);
         }
 
-        Todo.find({text}).then((todos) => {
+        Todo.find({
+          text
+        }).then((todos) => {
           expect(todos.length).toBe(1);
           expect(todos[0].text).toBe(text);
           done();
         }).catch((e) => done(e));
       });
   });
-
+  ///////////////////////////////////////////
   it('Should not create Todo with invalid data', (done) => {
 
     request(app)
@@ -76,8 +81,11 @@ describe('POST / todo', () => {
       });
   });
 });
-
-describe('GET /todos', () =>{
+////////////////////////////////////////
+////////////////////////////////////////
+////////////////////////////////////////
+describe('GET /todos', () => {
+  ///////////////////////////////////////////
   it('Should get all items in my todo collection', (done) => {
 
     request(app)
@@ -88,8 +96,11 @@ describe('GET /todos', () =>{
       }).end(done);
   });
 });
-
+////////////////////////////////////////
+////////////////////////////////////////
+////////////////////////////////////////
 describe('GET /todos:id', () => {
+  ///////////////////////////////////////////
   it('Should return todo docs', (done) => {
     request(app)
       .get(`/todos/${todos[0]._id.toHexString()}`)
@@ -99,7 +110,7 @@ describe('GET /todos:id', () => {
       })
       .end(done);
   });
-
+  ///////////////////////////////////////////
   it('Should get an 404 error for non-existing object', (done) => {
     request(app)
       .get(`/todo/${new ObjectID().toHexString()}`)
@@ -107,11 +118,51 @@ describe('GET /todos:id', () => {
       .end(done);
 
   });
-
+  ///////////////////////////////////////////
   it('Should return 404 error if todo not found', (done) => {
     request(app)
       .get('/todos/123')
       .expect(404)
       .end(done);
+  });
+});
+////////////////////////////////////////
+////////////////////////////////////////
+////////////////////////////////////////
+describe('DELETE /todos/:id', () => {
+  ///////////////////////////////////////////
+  it('Should remove todo from collection', (done) => {
+    let hexId = todos[0]._id.toHexString();
+
+    request(app)
+      .delete(`/todos/${hexId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo._id).toBe(hexId);
+      }).end((err, res) => {
+        if(err) {
+          return done(err);
+        }
+        Todo.findById(hexId).then((todo) => {
+          expect(todo).toBeFalsy();
+          done();
+        }).catch((e) => done(e));
+      });
+  });
+  ///////////////////////////////////////////
+  it('Should return 404 if entity does not exist in collection', (done) =>{
+
+    request(app)
+      .delete(`/todo/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done)
+  });
+  ///////////////////////////////////////////
+  it('Should return 404 if entity id is invalid', (done) => {
+
+    request(app)
+      .delete('/todo/abc123')
+      .expect(404)
+      .end(done)
   });
 });

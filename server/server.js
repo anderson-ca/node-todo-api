@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
-
+///////////////////////////////////////////
 const port = process.env.PORT || 3000;
-
+///////////////////////////////////////////
 const {
   mongoose
 } = require('./db/mongoose');
@@ -16,16 +16,13 @@ const {
 const {
   ObjectID
 } = require('mongodb');
-
+///////////////////////////////////////////
 let app = express();
-
 app.use(bodyParser.json());
 app.set('view engine', 'hbs')
-
 ////////////// -> hbs
 hbs.registerPartials(__dirname + '/views');
-
-////////////////////////////////////
+//////////////////////////////////// -> presist new document
 app.post('/todos', (req, res) => {
   let todo = new Todo({
     text: req.body.text
@@ -38,8 +35,7 @@ app.post('/todos', (req, res) => {
   });
 
 });
-
-////////////////////////////////////////
+//////////////////////////////////////// -> remove
 app.post('/todos/remove', (req, res) => {
   Todo.findOneAndDelete({
     _id: req.body._id
@@ -49,8 +45,7 @@ app.post('/todos/remove', (req, res) => {
     res.status(4000).send(err);
   })
 });
-
-////////////////////////////////////////
+//////////////////////////////////////// -> get all
 app.get('/todos', (req, res) => {
   Todo.find().then((todos) => {
     res.send({
@@ -64,8 +59,7 @@ app.get('/todos', (req, res) => {
 app.listen(port, () => {
   console.log(`App started on port ${port}`)
 });
-
-////////////////////////////////////////
+//////////////////////////////////////// -> get by id
 app.get('/todos/:id', (req, res) => {
   let todoId = req.params;
 
@@ -83,8 +77,7 @@ app.get('/todos/:id', (req, res) => {
     console.log(JSON.stringify(todo, undefined, 2));
   }).catch((err) => res.status(404).send());
 });
-
-////////////////////////////////////////
+//////////////////////////////////////// -> remove by id
 app.delete('/todos/:id', (req, res) => {
   let todoId = req.params;
 
@@ -96,12 +89,13 @@ app.delete('/todos/:id', (req, res) => {
     if(!todo) {
       return res.status(404).send();
     }
-    res.send(todo);
+    res.send({
+      todo
+      });
     console.log(JSON.stringify(todo, undefined, 2));
   }).catch((e) => res.status(404).send());
 
 });
-
 ///////////////
 ///////////////
 ///////////////
