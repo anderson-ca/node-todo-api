@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
@@ -42,7 +43,7 @@ app.post('/todos/remove', (req, res) => {
   }).then((doc) => {
     res.send(doc);
   }, (err) => {
-    res.status(4000).send(err);
+    res.status(400).send(err);
   })
 });
 //////////////////////////////////////// -> get all
@@ -95,6 +96,28 @@ app.delete('/todos/:id', (req, res) => {
     console.log(JSON.stringify(todo, undefined, 2));
   }).catch((e) => res.status(404).send());
 
+});
+//////////////////////////////////////// -> remove by id
+app.patch('/todos/:id', (req, res) => {
+  let id = req.params.id;
+  let body = _.pick(req.body, ['text', 'complete']);
+
+  if(!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  if(_.isBoolean(body.complete) && body.complete) {
+    body.completedAt = new Date().getTime();
+  } else {
+    body.complete = false;
+    body.compledtedAt = null;
+  }
+
+  Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+    res.send(todo);
+  }).catch((err) => {
+    res.status(404).send();
+  });
 });
 ///////////////
 ///////////////
