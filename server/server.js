@@ -110,13 +110,19 @@ app.patch('/todos/:id', (req, res) => {
     body.completedAt = new Date().getTime();
   } else {
     body.complete = false;
-    body.compledtedAt = null;
+    body.completeAt = null;
   }
 
   Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
-    res.send(todo);
+    if(!todo) {
+      return res.status(404).send();
+    }
+
+    res.send({todo});
+
   }).catch((err) => {
     res.status(404).send();
+
   });
 });
 ///////////////
