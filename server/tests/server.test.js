@@ -18,7 +18,9 @@ let todos = [
   },
   {
     _id: new ObjectID(),
-    text: 'second test'
+    text: 'second test',
+    complete: false,
+    completedAt: 666
   },
   {
     _id: new ObjectID(),
@@ -164,5 +166,48 @@ describe('DELETE /todos/:id', () => {
       .delete('/todo/abc123')
       .expect(404)
       .end(done)
+  });
+});
+////////////////////////////////////////
+////////////////////////////////////////
+////////////////////////////////////////
+describe('PATCH /todos/:id', () => {
+  ///////////////////////////////////////////
+  it('Should update an entity in the todos collection', (done) => {
+    let todoId = todos[1]._id.toHexString();
+    let text = 'fuck you, motherfucker';
+
+    request(app)
+      .patch(`/todos/${todoId}`)
+      .send({
+        complete: true,
+        text
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(text);
+        expect(res.body.todo.complete).toBe(true);
+        expect(typeof res.body.todo.completedAt).toBe('number');
+      })
+      .end(done);
+  });
+  ///////////////////////////////////////////
+  it('Should clear completedAt when todo is not completed', (done) => {
+    let hexId = todos[1]._id.toHexString();
+    let text = 'fuck this bullshit!!!!'
+
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .send({
+        complete: false,
+        text
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(text)
+        expect(res.body.todo.complete).toBe(false)
+        expect(res.body.todo.completedAt).toBe(null);
+      })
+      .end(done);
   });
 });
